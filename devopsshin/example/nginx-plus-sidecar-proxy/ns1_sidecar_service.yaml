@@ -20,7 +20,7 @@ spec:
         ports:
         - containerPort: 80
       - name: nginx-plus
-        image: gusgh13900/nginxplus:latest
+        image: nginxplus:latest
         ports:
         - containerPort: 8080
         volumeMounts:
