@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns2-deploy
+  namespace: ns2
+spec:
+  selector:
+    matchLabels:
+      app: ns2-deploy
+  template:
+    metadata:
+      labels:
+        app: ns2-deploy
+    spec:
+      imagePullSecrets:
+      - name: nginxplus
+      containers:
+      - name: ns2-container1
+        image: httpd
+        ports:
+        - containerPort: 80
+      - name: nginx-plus
+        image: nginxplus:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-plus-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ns2-svc
+  namespace: ns2
+  labels:
+    app: ns2-deploy
+spec:
+  clusterIP: 10.110.0.2
+  ports:
+  - name: http-ho-svc-port
+    port: 80
+    targetPort: 8080
+  selector:
+    app: ns2-deploy
