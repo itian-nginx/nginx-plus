@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prom-deploy
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: prom-deploy
+  template:
+    metadata:
+      labels:
+        app: prom-deploy
+    spec:
+      containers:
+      - name: prom-container
+        image: prom/prometheus
+        ports:
+          - containerPort: 9090
+        volumeMounts:
+        - name: prom-config
+          mountPath: /etc/prometheus/prometheus.yml
+          subPath: prometheus.yml
+      volumes:
+      - name: prom-config
+        configMap:
+          name: prom-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prom-svc
+  namespace: monitoring
+spec:
+  ports:
+  - name: prom-port
+    port: 80
+    targetPort: 9090
+    nodePort: 30090
+  selector:
+    app: prom-deploy
+  type: NodePort
