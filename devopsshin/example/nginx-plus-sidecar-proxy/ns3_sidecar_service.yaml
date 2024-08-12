@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns3-deploy
+  namespace: ns3
+spec:
+  selector:
+    matchLabels:
+      app: ns3-deploy
+  template:
+    metadata:
+      labels:
+        app: ns3-deploy
+    spec:
+      imagePullSecrets:
+      - name: nginxplus
+      containers:
+      - name: ns3-container1
+        image: httpd
+        ports:
+        - containerPort: 80
+      - name: nginx-plus
+        image: nginxplus:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-plus-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ns3-svc
+  namespace: ns3
+  labels:
+    app: ns3-deploy
+spec:
+  clusterIP: 10.110.0.3
+  ports:
+  - name: http-ho-svc-port
+    port: 80
+    targetPort: 8080
+  selector:
+    app: ns3-deploy
