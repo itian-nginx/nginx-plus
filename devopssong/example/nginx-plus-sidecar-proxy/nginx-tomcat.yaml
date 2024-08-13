@@ -21,6 +21,10 @@ spec:
         name: tomcat
         ports:
         - containerPort: 8080              
+        volumeMounts:
+        - name: tomcat-index            
+          mountPath: /usr/local/tomcat/webapps/ROOT/index.html
+          subPath: index.html
       - image: nginxstore/nginxplus:nginx-plus
         name: nginx-proxy
         ports:
@@ -40,3 +44,6 @@ spec:
       - name: nginx-conf
         configMap:
           name: nginx-conf
+      - name: tomcat-index
+        configMap:
+          name: tomcat-index

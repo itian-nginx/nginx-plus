@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tomcat-index
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Welcome to Tomcat</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+            h1 { color: #333; }
+            .container { max-width: 800px; margin: 0 auto; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Welcome to Tomcat</h1>
+            <p>This is a custom welcome page for your Tomcat server.</p>
+            <p>Your application is running successfully!</p>
+        </div>
+    </body>
+    </html>
