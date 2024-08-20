@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-plus-conf.d
+  namespace: nginx
+data:
+  nginx.conf: |
+      upstream tomcat{
+        zone tomcat 64k;
+        server localhost:8080;
+      }
+      server {
+        listen 80;
+
+        location / {
+          proxy_pass http://tomcat;
+        }
+      }
+      server{
+          listen 9113;
+          
+          location /api/ {
+            api write=on;
+          }
+          location = /metrics {
+            js_content prometheus.metrics;
+          }
+      }
