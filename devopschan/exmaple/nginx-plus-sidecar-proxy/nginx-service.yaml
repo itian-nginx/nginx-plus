@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-plus-deploy
+  namespace: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-plus
+  template:
+    metadata:
+      labels:
+        app: nginx-plus
+    spec:
+      containers:
+      - name: ns1-container1
+        image: tomcat
+        ports:
+        - containerPort: 8080
+      - name: nginx-plus-sidecar
+        image: asdfkco/nginx-plus-prometheus:nginx-plus-r32
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-plus-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-plus-svc
+  namespace: nginx123
+  labels:
+    app: nginx-plus
+spec:
+  ports:
+  - name: http-ho-svc-port1
+    port: 80
+    targetPort: 80
+  selector:
+    app: nginx-plus
