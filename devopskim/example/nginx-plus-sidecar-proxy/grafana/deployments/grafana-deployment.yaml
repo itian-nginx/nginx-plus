@@ -12,14 +12,29 @@ spec:
       app: grafana
   template:
     metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: grafana
       labels:
         app: grafana
     spec:
       containers:
-        - name: grafana
-          image: grafana/grafana:latest
-          ports:
-            - containerPort: 3000
-          env:
-            - name: GF_SECURITY_ADMIN_PASSWORD
-              value: "admin123!@#"
+      - name: grafana
+        #image: grafana/grafana:11.1.5
+        image: grafana/grafana:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: grafana
+          protocol: TCP
+        volumeMounts:
+        - name: storage
+          mountPath: /var/lib/grafana
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: grafana-pvc
+      securityContext:
+        fsGroup: 472
+        runAsUser: 472
+        runAsGroup: 472
+        runAsNonRoot: true
