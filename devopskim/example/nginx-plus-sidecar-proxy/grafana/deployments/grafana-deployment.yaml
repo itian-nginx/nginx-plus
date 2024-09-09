@@ -27,14 +27,14 @@ spec:
           name: grafana
           protocol: TCP
         volumeMounts:
-        - name: storage
-          mountPath: /var/lib/grafana
+        - name: storage               # 아래 정의한 "storage"라는 볼륨을 마운트
+          mountPath: /var/lib/grafana  # 컨테이너 내에서 /var/lib/grafana 디렉토리에 이 볼륨을 마운트
       volumes:
-      - name: storage
+      - name: storage                 # "storage"라는 이름의 볼륨 정의
         persistentVolumeClaim:
-          claimName: grafana-pvc
+          claimName: grafana-pvc       # PVC와 연동. PVC의 이름은 "grafana-pvc"
       securityContext:
-        fsGroup: 472
-        runAsUser: 472
-        runAsGroup: 472
-        runAsNonRoot: true
+        fsGroup: 472                  # 컨테이너 내 파일 시스템의 그룹 ID를 472로 설정
+        runAsUser: 472                # 컨테이너를 사용자 ID 472로 실행
+        runAsGroup: 472               # 컨테이너를 그룹 ID 472로 실행
+        runAsNonRoot: true            # root 사용자가 아닌 권한으로 실행
