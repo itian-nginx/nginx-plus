@@ -12,14 +12,29 @@ spec:
       app: grafana
   template:
     metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: grafana
       labels:
         app: grafana
     spec:
       containers:
-        - name: grafana
-          image: grafana/grafana:latest
-          ports:
-            - containerPort: 3000
-          env:
-            - name: GF_SECURITY_ADMIN_PASSWORD
-              value: "admin123!@#"
+      - name: grafana
+        #image: grafana/grafana:11.1.5
+        image: grafana/grafana:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: grafana
+          protocol: TCP
+        volumeMounts:
+        - name: storage               # 아래 정의한 "storage"라는 볼륨을 마운트
+          mountPath: /var/lib/grafana  # 컨테이너 내에서 /var/lib/grafana 디렉토리에 이 볼륨을 마운트
+      volumes:
+      - name: storage                 # "storage"라는 이름의 볼륨 정의
+        persistentVolumeClaim:
+          claimName: grafana-pvc       # PVC와 연동. PVC의 이름은 "grafana-pvc"
+      securityContext:
+        fsGroup: 472                  # 컨테이너 내 파일 시스템의 그룹 ID를 472로 설정
+        runAsUser: 472                # 컨테이너를 사용자 ID 472로 실행
+        runAsGroup: 472               # 컨테이너를 그룹 ID 472로 실행
+        runAsNonRoot: true            # root 사용자가 아닌 권한으로 실행
