@@ -5,7 +5,7 @@ metadata:
   labels:
     app: nodejs-app
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: nodejs-app
@@ -15,7 +15,7 @@ spec:
         app: nodejs-app
     spec:
       imagePullSecrets:
-        - name: <private-registry-secret> # NGINX Plus 이미지가 포함된 개인 이미지 레지스트리 시크릿
+        - name: nhncloud-regcred # NGINX Plus 이미지가 포함된 개인 이미지 레지스트리 시크릿
       containers:
       - name: nodejs-app-container
         image: nginxstore/example-response-nodejs:latest # NGINX STORE 제공 nodejs 컨테이너 이미지
@@ -29,7 +29,7 @@ spec:
             memory: "64Mi"
             cpu: "250m"
       - name: sidecar-nginx
-        image: <private.docker.nginxstore.com/nginx-plus/nginx-plus:r32> # NGINX Plus가 포함된 개인 이미지 레지스트리 주소로 변경
+        image: 264dee4a-kr1-registry.container.nhncloud.com/nginx-plus/nginx-plus:r32 # NGINX Plus가 포함된 개인 이미지 레지스트리 주소로 변경
         ports:
         - containerPort: 80
         - containerPort: 8080
